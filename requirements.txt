@@ -1,0 +1,14 @@
+crewai==0.175.0
+langchain-community==0.3.29
+pandas
+numpy
+notebook
+python-box==6.0.2
+pyYAML
+tqdm
+ensure==1.0.2
+joblib
+types-pyYAML
+Flask
+Flask-Cors
+-e .
