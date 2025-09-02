@@ -50,3 +50,4 @@ jobs:
           app-name: 'auto-blog-writer-app'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+          
