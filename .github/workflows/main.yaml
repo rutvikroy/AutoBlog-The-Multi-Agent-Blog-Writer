@@ -34,7 +34,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'multi-agent-blog-writer'  # Your App Service name
+          app-name: 'auto-blog-writer-app'  # Your App Service name
           slot-name: 'Production'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
           package: '.'  # Deploy full repo
