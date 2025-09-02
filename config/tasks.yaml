@@ -6,7 +6,7 @@ research_task:
     3. Develop a detailed content outline including an introduction, key points, and a call to action.
     4. Include SEO keywords and relevant data or sources.
   expected_output: "A comprehensive content plan document with an outline, audience analysis, SEO keywords, and resources."
-  agent: planner
+  agent: research
 
 report_task:
   description: 
