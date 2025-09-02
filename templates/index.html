@@ -180,39 +180,53 @@
         });
 
         const data = await response.json();
-        agentMessage.innerHTML = data.blog || "⚠️ Sorry, something went wrong.";
+        const blogText = data.blog_text; // plain text
+        agentMessage.innerHTML = data.blog || "⚠️ Something went wrong";
 
-        // Add download buttons
+        // Download buttons
         const downloadContainer = document.createElement("div");
         downloadContainer.style.marginTop = "10px";
         downloadContainer.style.display = "flex";
         downloadContainer.style.gap = "10px";
 
-        // TXT button
+        // TXT
         const txtBtn = document.createElement("button");
         txtBtn.className = "download-btn";
         txtBtn.textContent = "Download TXT";
-        txtBtn.onclick = () => downloadFile("blog.txt", data.blog, "text/plain");
+        txtBtn.onclick = () => downloadFile("blog.txt", blogText, "text/plain");
         downloadContainer.appendChild(txtBtn);
 
-        // PDF button
+        // PDF
         const pdfBtn = document.createElement("button");
         pdfBtn.className = "download-btn";
         pdfBtn.textContent = "Download PDF";
         pdfBtn.onclick = () => {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
-          const lines = doc.splitTextToSize(data.blog, 180);
-          doc.text(lines, 10, 10);
-          doc.save("blog.pdf");
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const lines = doc.splitTextToSize(blogText, 180);
+            doc.text(lines, 10, 10);
+            doc.save("blog.pdf");
         };
         downloadContainer.appendChild(pdfBtn);
 
-        // Word button
+        // Word (client-side download)
         const wordBtn = document.createElement("button");
         wordBtn.className = "download-btn";
         wordBtn.textContent = "Download Word";
-        wordBtn.onclick = () => downloadFile("blog.docx", data.blog, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        wordBtn.onclick = async () => {
+            // Server-generated Word file
+            const res = await fetch("/download-word", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: blogText })
+            });
+            const blob = await res.blob();
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "blog.docx";
+            link.click();
+            URL.revokeObjectURL(link.href);
+        };
         downloadContainer.appendChild(wordBtn);
 
         agentMessage.appendChild(downloadContainer);

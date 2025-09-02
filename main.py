@@ -45,7 +45,7 @@ try:
         backstory=research_agent_config.agent_backstory,
         llm=llm,
         allow_delegation=False,
-        verbose=True
+        verbose=False
     )
     
     reporting_agent = Agent(
@@ -54,7 +54,7 @@ try:
         backstory=reporting_agent_config.agent_backstory,
         llm=llm,
         allow_delegation=False,
-        verbose=True
+        verbose=False
     )
     
     editor_agent = Agent(
@@ -63,7 +63,7 @@ try:
         backstory=editor_agent_config.agent_backstory,
         llm=llm,
         allow_delegation=False,
-        verbose=True
+        verbose=False
     )
 
 

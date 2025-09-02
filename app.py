@@ -55,5 +55,6 @@ def download_word():
     f.seek(0)
     return send_file(f, as_attachment=True, download_name="blog.docx", mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+'''
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, debug=True)'''
