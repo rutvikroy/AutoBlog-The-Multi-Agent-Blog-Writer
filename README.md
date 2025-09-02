@@ -1,4 +1,7 @@
-# AutoBlog: The Multi-Agent Blog Writer
+# AutoBlog: The Multi-Agent Report/Blog Writer (CrewAI)
+
+![Project Screenshot](https://github.com/rutvikroy/AutoBlog-The-Multi-Agent-Blog-Writer/raw/main/Images/Image_1.png)
+![Project Screenshot](https://github.com/rutvikroy/AutoBlog-The-Multi-Agent-Blog-Writer/raw/main/Images/Image_2.png)
 
 ## Overview
 
@@ -109,14 +112,15 @@ AutoBlog-The-Multi-Agent-Blog-Writer/
 
    Example output: A Markdown-formatted blog post displayed in the notebook.
 
-### Running via Main Script (Production Mode)
+### Running via app Script (Production Mode)
 
-1. Update the topic in `main.py` (if applicable).
+1. Run the script:
+   ```
+   python app.py
+   ```
+2. open URL: http://127.0.0.1:5000/ in your browser
 
-2. Run the script:
-   ```
-   python main.py
-   ```
+3. Send a "Topic"
 
    This will execute the full pipeline and generate a blog post.
 
