@@ -19,3 +19,4 @@ jobs:
           app-name: 'crewai-blog-writer-agents'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
           package: '.'
+
