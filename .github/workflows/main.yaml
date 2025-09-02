@@ -38,3 +38,4 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
           package: '.'  # Deploy full repo
+          enable-oryx-build: true
