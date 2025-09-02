@@ -6,21 +6,22 @@ ENV PYTHONUNBUFFERED=1
 ENV PORT=8000  
 # Azure/Heroku-friendly
 
-# Install system packages
-RUN apt update -y && apt install -y azure-cli && apt clean
+#Set working directory
+WORKDIR /app
 
-# Copy dependency files first (so pip can see setup.py if -e . is in requirements.txt)
-COPY requirements.txt setup.py ./
+# Install system packages (optional: remove azure-cli if not needed in container)
+RUN apt-get update -y && apt-get install -y --no-install-recommends azure-cli && \
+    rm -rf /var/lib/apt/lists/*
+
+#Copy application code
+COPY . /app
 
 # Install dependencies
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the app
-COPY . .
-
 # Expose port 8000 (Azure Web Apps uses 8000 by default for containers)
 EXPOSE 8000
 
 # Start Flask app using uvicorn
-CMD ["uvicorn", "--bind", "0.0.0.0:8000", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
