@@ -1,4 +1,3 @@
-# Docs: https://github.com/Azure/webapps-deploy
 name: Deploy Python Flask App to Azure Web App
 
 on:
@@ -11,16 +10,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-
-      # 1️⃣ Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Deploy using Oryx (Azure handles pip install)
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'auto-blog-writer-app'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
           package: '.'
-          enable-oryx-build: true
