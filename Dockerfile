@@ -4,20 +4,18 @@ FROM python:3.11-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install system packages
-RUN apt update -y && apt install -y azurecli && apt clean
+# Copy requirements
+COPY requirements.txt .
 
-# Set working directory
-WORKDIR /app
-
-# Copy all files (including main.py, requirements.txt, etc.)
-COPY . .
-
-# Install Python dependencies
+# Install dependencies
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy app code
+COPY . .
 
-EXPOSE 8080
+# Expose port 8000 (Azure Web Apps uses 8000 by default for containers)
+EXPOSE 8000
 
-# Start the app and bind to all interfaces
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
+# Start Flask app using gunicorn
+CMD ["unicorn", "--bind", "0.0.0.0:8000", "app:app"]
