@@ -1,4 +1,4 @@
-name: Deploy to Azure Web App
+name: Deploy Python App to Azure Web App
 
 on:
   push:
@@ -7,40 +7,34 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted  # self-hosted runner
+    runs-on: ubuntu-latest
 
     steps:
       # 1️⃣ Checkout repo
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Login to Azure (required for deployment)
+      # 2️⃣ Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4️⃣ Azure login
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # 3️⃣ Login to Azure Container Registry (ACR)
-      - name: Log in to Azure Container Registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: blogwriter.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-
-      # 4️⃣ Build Docker image
-      - name: Build Docker image
-        run: |
-          docker build -t blogwriter.azurecr.io/autoblog:latest .
-
-      # 5️⃣ Push Docker image to ACR
-      - name: Push Docker image
-        run: |
-          docker push blogwriter.azurecr.io/autoblog:latest
-
-      # 6️⃣ Deploy Docker image to Azure Web App
+      # 5️⃣ Deploy to Azure Web App
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: multi-agent-blog-writer
-          images: blogwriter.azurecr.io/autoblog:latest
+          app-name: multi-agent-blog-writer   # Azure Web App name
+          package: .                          # Deploy entire repo
