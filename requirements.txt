@@ -3,7 +3,7 @@ langchain-community==0.3.29
 pydantic==2.11.7
 pandas
 numpy
-uvicorn
+gunicorn
 markdown2
 python-docx
 notebook
