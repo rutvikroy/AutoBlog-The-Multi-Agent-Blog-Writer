@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoBlog Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #ece5dd;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      max-width: 1700px;
+      width: 95%;
+      margin: auto;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #075E54;
+      color: white;
+      padding: 22px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      max-width: 90%;
+      padding: 12px 15px;
+      margin-bottom: 12px;
+      border-radius: 15px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      font-size: 22px;
+    }
+
+    .user-message {
+      background: #DCF8C6;
+      align-self: flex-end;
+      border-bottom-right-radius: 0;
+    }
+
+    .agent-message {
+      background: #f1f0f0;
+      align-self: flex-start;
+      border-bottom-left-radius: 0;
+    }
+
+    .chat-footer {
+      display: flex;
+      padding: 10px;
+      background: #f9f9f9;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-footer input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 22px;
+    }
+
+    .chat-footer button {
+      margin-left: 10px;
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: none;
+      background: #075E54;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 22px;
+    }
+
+    .chat-footer button:hover {
+      background: #0a7d68;
+    }
+
+    /* Download buttons styling */
+    .download-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #075E54;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .download-btn:hover {
+      background-color: #0a7d68;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      AutoBlog: Generate Detailed Reports/Blogs with AI Agents (CrewAI)
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="agent-message message">
+        👋 Hi! Give me a topic, and I’ll generate a detailed report/blog for you.
+      </div>
+    </div>
+    <div class="chat-footer">
+      <input type="text" id="userInput" placeholder="Type a blog topic...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- jsPDF library for PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <script>
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    async function sendMessage() {
+      const inputField = document.getElementById("userInput");
+      const chatBody = document.getElementById("chatBody");
+      const userText = inputField.value.trim();
+
+      if (!userText) return;
+
+      // Add user message
+      const userMessage = document.createElement("div");
+      userMessage.className = "user-message message";
+      userMessage.textContent = userText;
+      chatBody.appendChild(userMessage);
+
+      inputField.value = "";
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      // Add loading message
+      const agentMessage = document.createElement("div");
+      agentMessage.className = "agent-message message";
+      agentMessage.textContent = "✍️ Generating blog...";
+      chatBody.appendChild(agentMessage);
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      // Fetch blog from Flask backend
+      try {
+        const response = await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topic: userText })
+        });
+
+        const data = await response.json();
+        agentMessage.innerHTML = data.blog || "⚠️ Sorry, something went wrong.";
+
+        // Add download buttons
+        const downloadContainer = document.createElement("div");
+        downloadContainer.style.marginTop = "10px";
+        downloadContainer.style.display = "flex";
+        downloadContainer.style.gap = "10px";
+
+        // TXT button
+        const txtBtn = document.createElement("button");
+        txtBtn.className = "download-btn";
+        txtBtn.textContent = "Download TXT";
+        txtBtn.onclick = () => downloadFile("blog.txt", data.blog, "text/plain");
+        downloadContainer.appendChild(txtBtn);
+
+        // PDF button
+        const pdfBtn = document.createElement("button");
+        pdfBtn.className = "download-btn";
+        pdfBtn.textContent = "Download PDF";
+        pdfBtn.onclick = () => {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          const lines = doc.splitTextToSize(data.blog, 180);
+          doc.text(lines, 10, 10);
+          doc.save("blog.pdf");
+        };
+        downloadContainer.appendChild(pdfBtn);
+
+        // Word button
+        const wordBtn = document.createElement("button");
+        wordBtn.className = "download-btn";
+        wordBtn.textContent = "Download Word";
+        wordBtn.onclick = () => downloadFile("blog.docx", data.blog, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        downloadContainer.appendChild(wordBtn);
+
+        agentMessage.appendChild(downloadContainer);
+
+      } catch (error) {
+        agentMessage.textContent = "❌ Error fetching blog.";
+      }
+
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+  </script>
+
+</body>
+</html>
