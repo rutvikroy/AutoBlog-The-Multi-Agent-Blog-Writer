@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, jsonify, send_file
 from main import crew
 import markdown2
 import io
-from docx import Document 
+from docx import Document
+import os 
 
 app = Flask(__name__)
 
