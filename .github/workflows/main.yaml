@@ -12,30 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      # 1️⃣ Checkout full repo
+      # 1️⃣ Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up Python
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      # 3️⃣ Create virtual environment and install dependencies
-      - name: Install dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # 4️⃣ Deploy all repo files to Azure Web App
+      # 2️⃣ Deploy using Oryx (Azure handles pip install)
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'auto-blog-writer-app'  # Your App Service name
-          slot-name: 'Production'
+          app-name: 'auto-blog-writer-app'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
-          package: '.'  # Deploy full repo
+          package: '.'
           enable-oryx-build: true
