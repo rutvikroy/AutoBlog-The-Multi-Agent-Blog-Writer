@@ -44,4 +44,3 @@ jobs:
         with:
           app-name: multi-agent-blog-writer
           images: blogwriter.azurecr.io/autoblog:latest
-          slot-name: production
