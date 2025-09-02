@@ -4,6 +4,9 @@ FROM python:3.11-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# Install system packages
+RUN apt update -y && apt install -y azure-cli && apt clean
+
 # Copy requirements
 COPY requirements.txt .
 
