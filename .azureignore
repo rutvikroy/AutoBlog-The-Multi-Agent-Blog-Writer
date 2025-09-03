@@ -1,0 +1,20 @@
+# Exclude venv and caches
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Git & CI
+.git/
+.github/
+.gitignore
+
+# Logs and local files
+*.log
+*.sqlite3
+*.db
+
+# Not needed in Azure
+notebooks/
+tests/
+*.ipynb
