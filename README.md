@@ -118,7 +118,7 @@ AutoBlog-The-Multi-Agent-Blog-Writer/
    ```
    python app.py
    ```
-2. open URL: http://127.0.0.1:5000/ in your browser
+2. open URL: http://127.0.0.1:8080/ in your browser
 
 3. Send a "Topic"
 
