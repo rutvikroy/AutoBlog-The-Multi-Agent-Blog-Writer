@@ -59,5 +59,4 @@ def download_word():
 
 # Use Azure Web Apps PORT env variable for deployment
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=8080)
